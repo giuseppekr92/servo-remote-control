@@ -1,21 +1,31 @@
-const express = require('express');
-const cors = require('cors');
+const express = require("express");
+const bodyParser = require("body-parser");
+const fs = require("fs");
+const path = require("path");
+
 const app = express();
-app.use(cors());
-app.use(express.json());
+const PORT = process.env.PORT || 10000;
 
-let angolo = 90;
+// Middleware
+app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, "."))); // Serve index.html e altri file
 
-app.get('/comando-servo', (req, res) => {
-  res.json({ angolo });
+// API endpoint per comando
+app.post("/set-comando", (req, res) => {
+  const angolo = req.body.angolo;
+  console.log("Ricevuto comando:", angolo);
+
+  // Salva l’angolo in un file leggibile da Arduino
+  fs.writeFile("comando-servo.txt", angolo.toString(), (err) => {
+    if (err) {
+      console.error("Errore nel salvataggio:", err);
+      return res.status(500).send("Errore interno");
+    }
+    res.send("OK");
+  });
 });
 
-app.post('/set-comando', (req, res) => {
-  if (req.body && typeof req.body.angolo === 'number') {
-    angolo = req.body.angolo;
-    return res.json({ success: true });
-  }
-  res.status(400).json({ success: false });
+// Start server
+app.listen(PORT, () => {
+  console.log(`✅ Server avviato su porta ${PORT}`);
 });
-
-app.listen(process.env.PORT || 3000, () => console.log('Server running'));
