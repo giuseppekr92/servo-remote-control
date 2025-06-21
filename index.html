@@ -1,0 +1,26 @@
+
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Controllo remoto</title>
+  </head>
+  <body>
+    <h2>Servo remoto</h2>
+    Angolo: <span id="val">90</span>°
+    <br />
+    <input type="range" min="0" max="180" value="90" id="slider" />
+    <script>
+      const SLIDER = document.getElementById("slider");
+      const VAL = document.getElementById("val");
+      SLIDER.addEventListener("input", () => {
+        VAL.innerText = SLIDER.value;
+        fetch("/set-comando", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ angolo: SLIDER.value })
+        });
+      });
+    </script>
+  </body>
+</html>
