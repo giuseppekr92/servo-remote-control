@@ -5,15 +5,18 @@
   <h2>Servo remoto</h2>
   Angolo: <span id="val">90</span>°
   <input type="range" min="0" max="180" value="90" id="slider">
+
   <script>
     const SLIDER = document.getElementById("slider");
     const VAL = document.getElementById("val");
+
     SLIDER.addEventListener("input", () => {
       VAL.innerText = SLIDER.value;
-      fetch("https://TUO-SERVER.onrender.com/set-comando", {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({angolo:+SLIDER.value})
+
+      fetch("https://servo-remote-control.onrender.com/set-comando", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ angolo: SLIDER.value })
       });
     });
   </script>
